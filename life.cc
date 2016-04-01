@@ -1,12 +1,15 @@
 #include <iostream>
 #include <cstdlib>
 
+// Original implmentation: http://codereview.stackexchange.com/questions/47167/conways-game-of-life-in-c
+
 const int size = 75;
 
 void Display(bool grid[size + 1][size + 1]){
+  char block = '#';
   for (int a = 1; a < size; a++) {
     for (int b = 1; b < size; b++) {
-      if (grid[a][b] == true) std::cout << " *";
+      if (grid[a][b] == true) std::cout << block;
       else std::cout << "  ";
 
       if (b == size - 1) std::cout << std::endl;
