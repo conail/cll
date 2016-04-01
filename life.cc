@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <unistd.h>
 
 // Original implmentation: http://codereview.stackexchange.com/questions/47167/conways-game-of-life-in-c
 
@@ -54,8 +55,9 @@ int main(){
   grid[size/2+1][size/2+1] = true;
 
   while (true) {
+    system("clear");
     Display(grid);    
     liveOrDie(grid);
-    system("clear");
+    usleep(200000);
   }
 }
