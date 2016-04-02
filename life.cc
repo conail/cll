@@ -3,61 +3,61 @@
 #include <unistd.h>
 
 // Original implmentation: http://codereview.stackexchange.com/questions/47167/conways-game-of-life-in-c
+class Life {
+  static const int size = 50;
 
-const int size = 75;
+  bool frame[2][size][size];
+  int current;
 
-void Display(bool grid[size + 1][size + 1]){
-  char block = '#';
-  int a, b;
+public:
+  Life() {
+    int current = 0;
+    int mid = size/2;    
+    frame[current][mid  ][mid  ] = 1;
+    frame[current][mid-1][mid  ] = 1;
+    frame[current][mid  ][mid+1] = 1;
+    frame[current][mid  ][mid-1] = 1;
+    frame[current][mid+1][mid+1] = 1;
+        
+    while (true) {
+      system("clear");
+      display();    
+      iterate();
+      usleep(200000);
+    }
+  }
   
-  for (a = 1; a < size; a++) {
-    for (b = 1; b < size; b++) {
-      if (grid[a][b]) std::cout << block;
-      else std::cout << " ";
-
-      if (b == size - 1) std::cout << std::endl;
+private:
+  void display() {
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++)
+	std::cout << ((frame[current][i][j]) ? '#' : ' ');
+      std::cout << std::endl;
     }
   }
-}
+  
+  void iterate() {
+    int alive, next = (current + 1) % 2; 
+    
+    for (int i = 1; i < size; i++) {
+      for (int j = 1; j < size; j++) {
+        alive = 0;
 
-void CopyGrid(bool grid[size + 1][size + 1], bool grid2[size + 1][size + 1]){
-  for(int a = 0; a < size; a++)
-    for(int b = 0; b < size; b++)
-      grid2[a][b] = grid[a][b];
-}
-
-void liveOrDie(bool grid[size+1][size+1]) {
-  int a, b, c, d, life;
-  bool grid2[size+1][size+1] = {};
-
-  CopyGrid(grid, grid2);
-
-  for (a = 1; a < size; a++) {
-    for (b = 1; b < size; b++) {
-      life = 0;
-      for (c = -1; c < 2; c++)
-	for (d = -1; d < 2; d++)
-	  if ((c != 0 || d != 0) && (grid2[a+c][b+d])) life++;
+	for (int di = -1; di < 2; di++)
+	  for (int dj = -1; dj < 2; dj++)
+	    if (di != 0 || dj != 0)
+	      if (frame[current][i+di][j+dj]) alive++;
 	
-      if (life == 3) grid[a][b] = true;
-      else if (life > 3 || life < 2) grid[a][b] = false;
+	if      (alive == 3)             frame[next][i][j] = 1;
+	else if (alive > 3 || alive < 2) frame[next][i][j] = 0;
+	else frame[next][i][j] = frame[current][i][j];
+      }
     }
+    current = next;
   }
-}
+};
 
-int main(){
-  bool grid[size + 1][size + 1] = {};
-
-  grid[size/2][size/2] = true;
-  grid[size/2-1][size/2] = true;
-  grid[size/2][size/2+1] = true;
-  grid[size/2][size/2-1] = true;
-  grid[size/2+1][size/2+1] = true;
-
-  while (true) {
-    system("clear");
-    Display(grid);    
-    liveOrDie(grid);
-    usleep(200000);
-  }
+int main()
+{
+  new Life();  
 }
